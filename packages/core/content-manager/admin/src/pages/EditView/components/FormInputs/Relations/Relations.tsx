@@ -797,8 +797,14 @@ const RelationModalWithContext = ({
           }
           hasMoreItems={hasNextPage}
           loading={isLoadingSearchRelations || isLoadingPermissions}
-          onOpenChange={() => {
-            handleSearch(textValue ?? '');
+          onOpenChange={(isOpen) => {
+            // Reopening should list every available relation, not the text left over from the
+            // previous selection (the combobox can re-populate its text after the field value
+            // changes, so the reset in the effect above isn't reliable on its own).
+            if (isOpen) {
+              setTextValue('');
+              handleSearch('');
+            }
           }}
           noOptionsMessage={() =>
             formatMessage({
